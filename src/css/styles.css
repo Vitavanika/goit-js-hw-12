@@ -21,6 +21,23 @@ img {
   max-width: 100%;
 }
 
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background: #4e75ff;
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+
+}
+
+button:hover,
+button:active {
+  background: #6c8cff;
+}
+
 /* #endregion Global */
 
 /* #region Form */
@@ -56,19 +73,8 @@ img {
 }
 
 .form button {
-  cursor: pointer;
-  border: none;
-  border-radius: 8px;
   width: 91px;
   height: 40px;
-  background: #4e75ff;
-  color: #fff;
-  font-size: 16px;
-}
-
-.form button:hover,
-.form button:active {
-  background: #6c8cff;
 }
 
 /* #endregion Form */
@@ -144,13 +150,27 @@ img {
 
 /* #endregion Gallery */
 
+/* #region more load */
+
+.load-button {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 125px;
+  height: 40px;
+  margin: 48px auto;
+  transition: background-color 0.3s ease;
+}
+
+/* #endregion more load */
+
 /* #region Loader */
 .loader {
   display: none;
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  margin: 150px auto;
+  margin: 72px auto;
   position: relative;
   color: #4e75ff;
   box-sizing: border-box;
@@ -184,3 +204,21 @@ img {
 }
 
 /* #endregion Modal */
+
+/* #region Back to Top Button */
+.back-btn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.back-icon {
+  display: inline-block;
+}
+
+/* #endregion Back to Top Button */

@@ -6,6 +6,7 @@ import iconWarning from '../img/warning.svg';
 
 const gallery = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
+const loadMoreBtn = document.querySelector('.load-button');
 let lightbox;
 
 export function renderGallery(images) {
@@ -34,7 +35,7 @@ export function renderGallery(images) {
           </div>`
       )
       .join('');
-    gallery.innerHTML = markup;
+    gallery.insertAdjacentHTML('beforeend', markup);
 
     if (lightbox) {
       lightbox.refresh();
@@ -42,7 +43,7 @@ export function renderGallery(images) {
       lightbox = new SimpleLightbox('.gallery a');
     }
   } catch (error) {
-    showErrorMessage('Failed to render gallery.');
+    showMessage('Failed to render gallery.');
   }
 }
 
@@ -63,17 +64,32 @@ export function hideLoader() {
   loader.innerHTML = '';
 }
 
-export function showErrorMessage(message) {
-  iziToast.error({
-    title: 'Error',
+export function showLoadMoreBtn() {
+  loadMoreBtn.style.display = 'flex';
+}
+
+export function hideLoadMoreBtn() {
+  loadMoreBtn.style.display = 'none';
+}
+
+export function showMessage(message, options = {}) {
+  const {
+    title = 'Error',
+    backgroundColor = '#ef4040',
+    ...restOptions
+  } = options;
+
+  iziToast.show({
+    title: title,
     titleColor: '#fff',
     message: message,
     messageColor: '#fff',
-    backgroundColor: '#ef4040',
+    backgroundColor: backgroundColor,
     iconUrl: iconWarning,
     iconColor: '#fff',
     position: 'topRight',
     timeout: 3000,
     maxWidth: '432px',
+    ...restOptions,
   });
 }
