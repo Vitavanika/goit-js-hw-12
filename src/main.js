@@ -46,6 +46,7 @@ async function handleSearch(event, loadMore = false) {
     page += 1;
   }
 
+  hideLoadMoreBtn();
   showLoader();
 
   try {
