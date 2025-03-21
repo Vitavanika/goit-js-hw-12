@@ -21,19 +21,31 @@ const loadMoreBtn = document.querySelector('.load-button');
 const gallery = document.querySelector('.gallery');
 const backToTopBtn = document.getElementById('backBtn');
 let searchQuery = '';
-let page = 1;
+let page;
 let totalHits;
 
-async function onSubmitForm(event) {
-  event.preventDefault();
-  clearGallery();
-  searchQuery = form.elements['search-text'].value.trim();
-
-  if (!searchQuery) {
-    showMessage('Please enter a search query.');
-    form.elements['search-text'].value = '';
-    return;
+async function handleSearch(event, loadMore = false) {
+  if (event) {
+    event.preventDefault();
   }
+
+  if (!loadMore) {
+    page = 1;
+    clearGallery();
+    hideLoadMoreBtn();
+    searchQuery = form.elements['search-text'].value.trim();
+
+    if (!searchQuery) {
+      showMessage('Please enter a search query.');
+      if (event) {
+        form.elements['search-text'].value = '';
+      }
+      return;
+    }
+  } else {
+    page += 1;
+  }
+
   showLoader();
 
   try {
@@ -48,58 +60,37 @@ async function onSubmitForm(event) {
       hideLoadMoreBtn();
     } else {
       renderGallery(data.hits);
-      if (data.hits.length < totalHits) {
-        showLoadMoreBtn();
-      } else {
-        hideLoadMoreBtn();
-      }
-    }
-  } catch (error) {
-    hideLoader();
-    showMessage(error.message);
-  } finally {
-    form.reset();
-  }
-}
 
-async function onLoadMore() {
-  page += 1;
-  showLoader();
-  hideLoadMoreBtn();
-
-  try {
-    const data = await fetchImages(searchQuery, page);
-    hideLoader();
-
-    if (data.hits.length === 0) {
-      showMessage('No more images found.');
-      hideLoadMoreBtn();
-    } else {
-      renderGallery(data.hits);
-
-      const firstCard = gallery.firstElementChild;
-      if (firstCard) {
-        const { height: cardHeight } = firstCard.getBoundingClientRect();
-        window.scrollBy({
-          top: cardHeight * 2,
-          behavior: 'smooth',
-        });
+      if (loadMore) {
+        const firstCard = gallery.firstElementChild;
+        if (firstCard) {
+          const { height: cardHeight } = firstCard.getBoundingClientRect();
+          window.scrollBy({
+            top: cardHeight * 2,
+            behavior: 'smooth',
+          });
+        }
       }
 
       if (page * 15 < totalHits) {
         showLoadMoreBtn();
       } else {
         hideLoadMoreBtn();
-        showMessage(
-          "We're sorry, but you've reached the end of search results.",
-          infoMsg
-        );
+        if (loadMore) {
+          showMessage(
+            "We're sorry, but you've reached the end of search results.",
+            infoMsg
+          );
+        }
       }
     }
   } catch (error) {
     hideLoader();
     showMessage(error.message);
-    showLoadMoreBtn();
+  } finally {
+    if (event) {
+      form.reset();
+    }
   }
 }
 
@@ -118,7 +109,7 @@ function scrollToTop() {
   });
 }
 
-form.addEventListener('submit', onSubmitForm);
-loadMoreBtn.addEventListener('click', onLoadMore);
+form.addEventListener('submit', event => handleSearch(event, false));
+loadMoreBtn.addEventListener('click', () => handleSearch(null, true));
 window.addEventListener('scroll', scrollFunction);
 backToTopBtn.addEventListener('click', scrollToTop);
